@@ -13,7 +13,7 @@ const (
 	default_process_num int = 10
 	// default process goruntine count
 	default_cocurrent_count = 10
-	// default process interval
+	// default process interval with Millisecond
 	default_interval = 100
 )
 
