@@ -17,29 +17,29 @@ const (
 	default_interval = 100
 )
 
-type CallbackFunc func(ctx context.Context, task any) (any, error)
+type CallerFunc func(ctx context.Context, param any) (any, error)
 
 type InterruptFunc func() bool
 
 type processor struct {
 	ctx           context.Context
 	interval      int
-	taskList      []any
+	paramsList    []any
 	cocurrentCnt  int
 	processNum    int
-	callback      CallbackFunc
+	callerFunc    CallerFunc
 	interruptFunc InterruptFunc
 }
 
 // init processor
-func NewBatchProcessor(ctx context.Context, taskList any, callback CallbackFunc) *processor {
+func NewBatchProcessor(ctx context.Context, paramsList any, callerFunc CallerFunc) *processor {
 	return &processor{
 		ctx:          ctx,
 		interval:     default_interval,
-		taskList:     transformInterfaceToAnySlice(taskList),
+		paramsList:   transformInterfaceToAnySlice(paramsList),
 		cocurrentCnt: default_cocurrent_count,
 		processNum:   default_process_num,
-		callback:     callback,
+		callerFunc:   callerFunc,
 	}
 }
 
@@ -72,26 +72,27 @@ func (p *processor) isInterrupted() bool {
 }
 
 func (p *processor) Run() (any, error) {
-	if len(p.taskList) == 0 {
-		return nil, errors.New("Empty input task list")
+	if len(p.paramsList) == 0 {
+		return nil, errors.New("Empty input params list")
 	}
 
-	goPool := pool.New().WithErrors().WithContext(p.ctx).WithMaxGoroutines(p.cocurrentCnt)
+	goPool := pool.NewWithResults[any]().WithErrors().WithContext(p.ctx).WithMaxGoroutines(p.cocurrentCnt)
 
-	SplitTaskList := SplitByLength(p.taskList, p.processNum)
+	splitParamsList := SplitByLength(p.paramsList, p.processNum)
 
-	for index, SliceTaskList := range SplitTaskList {
-		for _, task := range SliceTaskList {
+	for index, SliceParamsList := range splitParamsList {
+		for _, param := range SliceParamsList {
 			if p.isInterrupted() {
-				return nil, errors.New("process interrupted, process index=" + string(index)
+				return nil, errors.New("process interrupted, process index=" + string(rune(index)))
 			}
-			tmpTask := task
-			goPool.Go(func(ctx context.Context) error {
-				return p.callback(ctx, tmpTask)
+			tmpParam := param
+			goPool.Go(func(ctx context.Context) (any, error) {
+				return p.callerFunc(ctx, tmpParam)
 			})
 			time.Sleep(time.Millisecond * time.Duration(p.interval))
 		}
+		goPool.Wait()
 	}
 
-	return nil, goPool.Wait()
+	return nil, nil
 }
