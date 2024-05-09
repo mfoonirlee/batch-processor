@@ -92,5 +92,6 @@ func (p *processor) Run() (any, error) {
 			time.Sleep(time.Millisecond * time.Duration(p.interval))
 		}
 	}
+
 	return goPool.Wait()
 }

@@ -34,8 +34,9 @@ func TestRun(t *testing.T) {
 
 	// test error nums
 	expectErrs := 100
-	if len(strings.Split(err.Error(), ";")) != expectErrs {
-		t.Errorf("expect %d errors, but got %d", expectErrs, len(strings.Split(err.Error(), ";")))
+	realErrs := len(strings.Split(err.Error(), ";"))
+	if realErrs != expectErrs {
+		t.Errorf("expect %d errors, but got %d", expectErrs, realErrs)
 	}
 
 	// test res nums
