@@ -3,6 +3,7 @@
 this is a batch processor for golang, it provide a simple way to process a batch of tasks.
 
 ## How to use
+The Go version needs to be greater than 1.18.
 
 ### Create
 
