@@ -41,8 +41,9 @@ func TestRun(t *testing.T) {
 
 	// test res nums
 	expectResCount := 900
-	if len(res.([]interface{})) != expectResCount {
-		t.Errorf("expect %d results, but got %d", expectResCount, len(res.([]interface{})))
+	successCount := len(res.([]interface{}))
+	if successCount != expectResCount {
+		t.Errorf("expect %d results, but got %d", expectResCount, successCount)
 	}
 
 }
