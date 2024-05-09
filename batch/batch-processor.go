@@ -89,8 +89,8 @@ func (p *processor) Run() (any, error) {
 			goPool.Go(func(ctx context.Context) (any, error) {
 				return p.callerFunc(ctx, tmpParam)
 			})
-			time.Sleep(time.Millisecond * time.Duration(p.interval))
 		}
+		time.Sleep(time.Millisecond * time.Duration(p.interval))
 	}
 
 	return goPool.Wait()
