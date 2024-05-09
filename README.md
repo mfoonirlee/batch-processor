@@ -8,7 +8,7 @@ this is a batch processor for golang, it provide a simple way to process a batch
 
 ```golang
 // initialize a batch processor
-processor := NewBatchProcessor(ctx, taskList, callback)
+processor := NewBatchProcessor(ctx, paramsList, caller)
 ```
 
 ### Config processor

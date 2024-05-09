@@ -14,7 +14,7 @@ const (
 	// default process goruntine count
 	default_cocurrent_count = 10
 	// default process interval with Millisecond
-	default_interval = 100
+	default_interval = 10
 )
 
 type CallerFunc func(ctx context.Context, param any) (any, error)
@@ -91,8 +91,6 @@ func (p *processor) Run() (any, error) {
 			})
 			time.Sleep(time.Millisecond * time.Duration(p.interval))
 		}
-		goPool.Wait()
 	}
-
-	return nil, nil
+	return goPool.Wait()
 }

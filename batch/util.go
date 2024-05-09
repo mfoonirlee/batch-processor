@@ -15,8 +15,9 @@ func SplitByLength[T any](sourceArray []T, length int) (targetArray [][]T) {
 		if newIndex > len(sourceArray) {
 			newIndex = len(sourceArray)
 		}
-		targetArray = append(targetArray, sourceArray[0:newIndex])
+		targetArray = append(targetArray, sourceArray[i:newIndex])
 	}
+
 	return
 }
 
